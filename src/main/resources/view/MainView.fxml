@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainView">
+   <children>
+      <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0" VBox.vgrow="ALWAYS">
+         <children>
+            <TreeView fx:id="treeView" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+      <ToolBar>
+        <items>
+          <Button fx:id="buttonReadFXML" mnemonicParsing="false" onAction="#readFXML" text="Read FXML" />
+            <Label fx:id="labelName" text="name" />
+        </items>
+      </ToolBar>
+   </children>
+</VBox>

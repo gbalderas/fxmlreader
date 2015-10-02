@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+
+<ToolBar prefHeight="40.0" prefWidth="200.0" xmlns:fx="http://javafx.com/fxml/1"
+	xmlns="http://javafx.com/javafx/8">
+	<items>
+		<Button mnemonicParsing="false" text="Button" />
+		<TextField />
+		<fx:include source="views/views.fxml" />
+	</items>
+</ToolBar>
