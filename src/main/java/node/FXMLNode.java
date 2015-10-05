@@ -41,7 +41,7 @@ public class FXMLNode {
 	}
 
 	public void setPath(String path) {
-		if (this.parent != null) {
+		if (this.parent != null) { // TODO do this in FXMLReader
 			Path paths = Paths.get(parent.getPath().replace(parent.getName(), "") + path).normalize();
 			path = paths.toString();
 			this.name = paths.getFileName().toString();
@@ -55,10 +55,6 @@ public class FXMLNode {
 
 	public void setNodesList(ArrayList<FXMLNode> nodesList) {
 		this.nodesList = nodesList;
-	}
-
-	public void addNodesToList(FXMLNode node) {
-		this.nodesList.add(node);
 	}
 
 }

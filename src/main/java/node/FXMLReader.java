@@ -2,7 +2,6 @@ package node;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import org.xml.sax.Attributes;
@@ -16,6 +15,8 @@ public class FXMLReader {
 	private String CONTROLLER;
 	private ArrayList<FXMLNode> list;
 
+	// makes first node (rootNode) from an fxml file, then parses it and looks
+	// for fx:controller and fx:includes
 	public FXMLNode readFXML(File fxml) throws SAXException, IOException {
 		FXMLNode rootNode = new FXMLNode();
 		XMLReader reader = XMLReaderFactory.createXMLReader();
@@ -29,10 +30,12 @@ public class FXMLReader {
 		return rootNode;
 	}
 
+	// recursive method, looks in the included nodes for more included nodes
 	private void lookForNodes(FXMLNode node, XMLReader reader) throws IOException, SAXException {
 
 		for (FXMLNode n : node.getNodesList()) {
-			n.setParent(node);
+			n.setParent(node); // TODO make method for setting path [currently:
+			                   // FXMLNode.setPath(String path)]
 			n.setPath(n.getName());
 			n.setController(getFXMLController(reader, n.getPath()));
 			n.setNodesList(getListOfFXMLIncludes(reader, n.getPath()));
@@ -41,6 +44,8 @@ public class FXMLReader {
 
 	}
 
+	// returns controller string of parsed FXML file, using controllerHandler
+	// for SAXParsing
 	private String getFXMLController(XMLReader reader, String pathToFXML) throws IOException, SAXException {
 		CONTROLLER = "no controller found"; // default, will return if no
 		                                    // controller is found
@@ -49,6 +54,8 @@ public class FXMLReader {
 		return CONTROLLER;
 	}
 
+	// makes a list of FXMLNodes of parsed FXML file, using includeHandler for
+	// SAXParsing
 	private ArrayList<FXMLNode> getListOfFXMLIncludes(XMLReader reader, String pathToFXML)
 	        throws IOException, SAXException {
 		list = new ArrayList<>();
@@ -57,6 +64,7 @@ public class FXMLReader {
 		return list;
 	}
 
+	// looks for fx:controller attribute in FXML file
 	private DefaultHandler controllerHandler = new DefaultHandler() {
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) {
@@ -70,6 +78,8 @@ public class FXMLReader {
 		}
 	};
 
+	// looks for all fx:include elements in FXML file, creates a node for each
+	// include
 	private DefaultHandler includeHandler = new DefaultHandler() {
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) {
@@ -84,6 +94,7 @@ public class FXMLReader {
 
 	};
 
+	// Custom exception to stop parsing
 	@SuppressWarnings("serial")
 	class StopParsingException extends SAXException {
 		// empty StackTrace
