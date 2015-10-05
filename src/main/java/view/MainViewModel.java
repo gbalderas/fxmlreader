@@ -48,8 +48,8 @@ public class MainViewModel implements ViewModel {
 		for (FXMLNode n : node.getNodesList())
 			addTreeItemsFromNode(n, item);// loop
 
-		System.out.println(
-		        node.getName() + " (Children:" + node.getNodesList().size() + ") " + " ; " + node.getController());
+		System.out.println(node.getName() + " (Children:" + node.getNodesList().size() + ") " + " ; "
+		        + node.getController() + " ; " + node.getPath());
 		item.setValue(node.getName());
 		if (item.isLeaf()) // adds * if item is a leaf (end of branch)
 			item.setValue("*" + item.getValue());

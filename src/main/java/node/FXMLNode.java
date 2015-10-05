@@ -1,5 +1,7 @@
 package node;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class FXMLNode {
@@ -8,6 +10,15 @@ public class FXMLNode {
 	private String controller;
 	private String path;
 	private ArrayList<FXMLNode> nodesList = new ArrayList<>();
+	private FXMLNode parent;
+
+	public FXMLNode getParent() {
+		return this.parent;
+	}
+
+	public void setParent(FXMLNode parent) {
+		this.parent = parent;
+	}
 
 	public String getName() {
 		return name;
@@ -30,6 +41,11 @@ public class FXMLNode {
 	}
 
 	public void setPath(String path) {
+		if (this.parent != null) {
+			Path paths = Paths.get(parent.getPath().replace(parent.getName(), "") + path).normalize();
+			path = paths.toString();
+			this.name = paths.getFileName().toString();
+		}
 		this.path = path;
 	}
 
