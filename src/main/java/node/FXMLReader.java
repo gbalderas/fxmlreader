@@ -10,61 +10,119 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+/**
+ * FXMLReader is an Object that can parse an FXML file and retrieve some
+ * information from it in the form of an {@link FXMLNode}. Uses the SAX parser
+ * XMLReader.
+ * 
+ * @author gerardo.balderas
+ *
+ * @see FXMLNode
+ * @see XMLReader
+ */
 public class FXMLReader {
 
 	private String CONTROLLER;
 	private ArrayList<FXMLNode> list;
 
-	// makes first node (rootNode) from an fxml file, then parses it and looks
-	// for fx:controller and fx:includes
-	public FXMLNode readFXML(File fxml) throws SAXException, IOException {
+	/**
+	 * Returns an FXMLNode from the given FXML file. This method implements a
+	 * recursive method which follows a Depth-first search to find all included
+	 * FXML files within their FXML files.
+	 * 
+	 * @param fxml
+	 *            Root FXML file to be read.
+	 * @return The root node of the FXML file as an FXMLNode.
+	 * @throws SAXException
+	 * @throws IOException
+	 * @see FXMLNode
+	 */
+	public FXMLNode readFXML(File fxml) throws SAXException, IOException { // TODO
+	                                                                       // rename
+		// creates the root FXMLNode and parses through it
 		FXMLNode rootNode = new FXMLNode();
 		XMLReader reader = XMLReaderFactory.createXMLReader();
 
 		rootNode.setName(fxml.getName());
 		rootNode.setPath(fxml.getPath());
-		rootNode.setController(getFXMLController(reader, fxml.getPath()));
-		rootNode.setNodesList(getListOfFXMLIncludes(reader, fxml.getPath()));
+		rootNode.setController(parseForController(reader, fxml.getPath()));
+		rootNode.setChildren(parseForIncludes(reader, fxml.getPath()));
 
+		// parses through included FXML files.
 		lookForNodes(rootNode, reader);
 		return rootNode;
 	}
 
-	// recursive method, looks in the included nodes for more included nodes
+	/**
+	 * Recursive method to parse all included FXMLs and add them to its parent.
+	 * Implements a Depth-first search to find all included FXML files.
+	 * 
+	 * @param node
+	 *            Parent FXMLNode, it's children will be parsed.
+	 * @param reader
+	 *            XMLReader to parse the FXML file.
+	 * @throws IOException
+	 * @throws SAXException
+	 */
 	private void lookForNodes(FXMLNode node, XMLReader reader) throws IOException, SAXException {
 
-		for (FXMLNode n : node.getNodesList()) {
-			n.setParent(node); // TODO make method for setting path [currently:
-			                   // FXMLNode.setPath(String path)]
-			n.setPath(n.getName());
-			n.setController(getFXMLController(reader, n.getPath()));
-			n.setNodesList(getListOfFXMLIncludes(reader, n.getPath()));
-			lookForNodes(n, reader); // loop
+		for (FXMLNode child : node.getChildren()) {
+			child.setParent(node); // TODO make method for setting path
+			                       // [currently:
+			// FXMLNode.setPath(String path)]
+			child.setPath(child.getName());
+			child.setController(parseForController(reader, child.getPath()));
+			child.setChildren(parseForIncludes(reader, child.getPath()));
+			lookForNodes(child, reader); // loop
 		}
 
 	}
 
-	// returns controller string of parsed FXML file, using controllerHandler
-	// for SAXParsing
-	private String getFXMLController(XMLReader reader, String pathToFXML) throws IOException, SAXException {
-		CONTROLLER = "no controller found"; // default, will return if no
-		                                    // controller is found
+	/**
+	 * Returns the controllers name from the given FXML file's path. Sets the
+	 * content handler to the custom DefaultHandler {@link #controllerHandler}.
+	 * 
+	 * @param reader
+	 *            XMLReader to parse the FXML file.
+	 * @param pathToFXML
+	 *            Path to FXML file.
+	 * @return The name of the controller, if no controller is found it returns
+	 *         null.
+	 * @throws IOException
+	 * @throws SAXException
+	 */
+	private String parseForController(XMLReader reader, String pathToFXML) throws IOException, SAXException {
+		CONTROLLER = null;
 		reader.setContentHandler(controllerHandler);
 		reader.parse(pathToFXML);
 		return CONTROLLER;
 	}
 
-	// makes a list of FXMLNodes of parsed FXML file, using includeHandler for
-	// SAXParsing
-	private ArrayList<FXMLNode> getListOfFXMLIncludes(XMLReader reader, String pathToFXML)
-	        throws IOException, SAXException {
+	/**
+	 * Returns an ArrayList of included FXMLNodes of parsed FXML file. Sets the
+	 * content handler to the custom DefaultHandler {@link #includeHandler}.
+	 * 
+	 * @param reader
+	 *            XMLReader to parse the FXML file.
+	 * @param pathToFXML
+	 *            Path to FXML file.
+	 * @return An ArrayList containing included FXMLNodes
+	 * @throws IOException
+	 * @throws SAXException
+	 */
+	private ArrayList<FXMLNode> parseForIncludes(XMLReader reader, String pathToFXML) throws IOException, SAXException {
 		list = new ArrayList<>();
 		reader.setContentHandler(includeHandler);
 		reader.parse(pathToFXML);
 		return list;
 	}
 
-	// looks for fx:controller attribute in FXML file
+	/**
+	 * Looks for the fx:controller attribute in the FXML file that is being read
+	 * and sets the returning controller name.
+	 * 
+	 * @see #parseForController(XMLReader, String)
+	 */
 	private DefaultHandler controllerHandler = new DefaultHandler() {
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) {
@@ -78,8 +136,12 @@ public class FXMLReader {
 		}
 	};
 
-	// looks for all fx:include elements in FXML file, creates a node for each
-	// include
+	/**
+	 * Looks for all &ltfx:include&gt elements in the FXML file. It creates a
+	 * node for each include and adds it to the returning list
+	 * 
+	 * @see #parseForIncludes(XMLReader, String)
+	 */
 	private DefaultHandler includeHandler = new DefaultHandler() {
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) {
@@ -94,9 +156,19 @@ public class FXMLReader {
 
 	};
 
-	// Custom exception to stop parsing
-	@SuppressWarnings("serial")
+	/**
+	 * Custom Exception to stop parsing. Used when Controller is found, since
+	 * there can only be one controller class.
+	 * 
+	 * @author gerardo.balderas
+	 *
+	 */
 	class StopParsingException extends SAXException {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 6802692101026207305L;
+
 		// empty StackTrace
 		@Override
 		public synchronized Throwable fillInStackTrace() {

@@ -19,8 +19,6 @@ public class MainViewModel implements ViewModel {
 	public SimpleStringProperty fileName = new SimpleStringProperty();
 	// rootItem is not visible in TreeView in MainView
 
-	FXMLNode rootNode;
-
 	public MainViewModel() {
 		rootItem = new TreeItem<String>("root");
 	}
@@ -35,7 +33,7 @@ public class MainViewModel implements ViewModel {
 
 		// Read FXML file
 		FXMLReader fxmlreader = new FXMLReader();
-		rootNode = fxmlreader.readFXML(file);
+		FXMLNode rootNode = fxmlreader.readFXML(file);
 
 		// add Items to rootNode
 		addTreeItemsFromNode(rootNode, rootItem);
@@ -43,18 +41,18 @@ public class MainViewModel implements ViewModel {
 
 	// recursive method to get to the leaves -> will create an Item[original
 	// fxml] with other Items
-	private void addTreeItemsFromNode(FXMLNode node, TreeItem<String> leafItem) {
+	private void addTreeItemsFromNode(FXMLNode node, TreeItem<String> treeItem) {
 		TreeItem<String> item = new TreeItem<String>();
-		for (FXMLNode n : node.getNodesList())
+		for (FXMLNode n : node.getChildren())
 			addTreeItemsFromNode(n, item);// loop
 
-		System.out.println(node.getName() + " (Children:" + node.getNodesList().size() + ") " + " ; "
+		System.out.println(node.getName() + " (Children:" + node.getChildren().size() + ") " + " ; "
 		        + node.getController() + " ; " + node.getPath());
 		item.setValue(node.getName());
 		if (item.isLeaf()) // adds * if item is a leaf (end of branch)
 			item.setValue("*" + item.getValue());
 
-		leafItem.getChildren().add(item);
-		leafItem.setExpanded(true);
+		treeItem.getChildren().add(item);
+		treeItem.setExpanded(true);
 	}
 }
