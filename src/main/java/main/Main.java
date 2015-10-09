@@ -10,15 +10,16 @@ public class Main extends Application {
 
 	public static Scene scene;
 
-	public static void main(String[] a){
+	public static void main(String[] a) {
 		launch(a);
 
 	}
 
 	@Override
-	public void start(Stage stage){
+	public void start(Stage stage) {
 
 		scene = new Scene(FluentViewLoader.fxmlView(MainView.class).load().getView());
+		// FXMLNode root = FXMLReader.readFXML(pathToFXML)
 
 		stage.setScene(scene);
 		stage.show();

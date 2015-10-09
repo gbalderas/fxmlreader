@@ -13,6 +13,5 @@
 		<fx:include source="toolbar.fxml" />
 		<fx:include source="../view/MainView.fxml" />
 		<fx:include source="../../../../../../java/sudoku_mvvm/src/main/resources/view/MainView.fxml" />
-      <fx:include source="../../../../../../../../Desktop/test.fxml" />
 	</children>
 </VBox>
