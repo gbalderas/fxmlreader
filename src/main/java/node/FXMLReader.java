@@ -2,6 +2,8 @@ package node;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import org.xml.sax.Attributes;
@@ -37,18 +39,46 @@ public class FXMLReader {
 	 * @throws IOException
 	 * @see FXMLNode
 	 */
-	public static FXMLNode readFXML(File fxml) throws SAXException, IOException { // TODO
-	                                                                       // rename
-		// creates the root FXMLNode and parses through it
+	public static FXMLNode parseFXML(File fxml) throws SAXException, IOException {
+		return readFXML(fxml.getPath());
+	}
+
+	/**
+	 * Returns an FXMLNode from the given FXML String path. This method
+	 * implements a recursive method which follows a Depth-first search to find
+	 * all included FXML files within their FXML files.
+	 * 
+	 * @param pathToFXML
+	 *            Path to the FXML in a String.
+	 * @return The root node of the FXML String path as an FXMLNode.
+	 * @throws SAXException
+	 * @throws IOException
+	 * @see FXMLNode
+	 */
+	public static FXMLNode parseFXML(String pathToFXML) throws SAXException, IOException {
+		return readFXML(pathToFXML);
+	}
+
+	/**
+	 * Returns the root node of the FXML file to be parsed.
+	 * 
+	 * @param pathToFXML
+	 * @return The root node of the FXML as an FXMLNode.
+	 * @throws SAXException
+	 * @throws IOException
+	 * @see #parseFXML(String)
+	 */
+	private static FXMLNode readFXML(String pathToFXML) throws SAXException, IOException {
 		FXMLNode rootNode = new FXMLNode();
 		XMLReader reader = XMLReaderFactory.createXMLReader();
+		Path path = Paths.get(pathToFXML);
 
-		rootNode.setName(fxml.getName());
-		rootNode.setPath(fxml.getPath());
-		rootNode.setController(parseForController(reader, fxml.getPath()));
-		rootNode.setChildren(parseForIncludes(reader, fxml.getPath()));
+		rootNode.setName(path.getFileName().toString());
+		rootNode.setPath(path.toString());
 
-		// parses through included FXML files.
+		rootNode.setController(parseForController(reader, pathToFXML));
+		rootNode.setChildren(parseForIncludes(reader, pathToFXML));
+
 		lookForNodes(rootNode, reader);
 		return rootNode;
 	}
@@ -67,10 +97,12 @@ public class FXMLReader {
 	private static void lookForNodes(FXMLNode node, XMLReader reader) throws IOException, SAXException {
 
 		for (FXMLNode child : node.getChildren()) {
-			child.setParent(node); // TODO make method for setting path
-			                       // [currently:
-			// FXMLNode.setPath(String path)]
-			child.setPath(child.getName());
+			child.setParent(node);
+			Path path = Paths.get(node.getPath().replace(node.getName(), "") + child.getPath()).normalize(); // normalizes
+			                                                                                                 // Path
+			child.setPath(path.toString()); // sets new normalized path
+			child.setName(path.getFileName().toString()); // sets name to the
+			                                              // file's Name
 			child.setController(parseForController(reader, child.getPath()));
 			child.setChildren(parseForIncludes(reader, child.getPath()));
 			lookForNodes(child, reader); // loop
@@ -110,7 +142,8 @@ public class FXMLReader {
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-	private static ArrayList<FXMLNode> parseForIncludes(XMLReader reader, String pathToFXML) throws IOException, SAXException {
+	private static ArrayList<FXMLNode> parseForIncludes(XMLReader reader, String pathToFXML)
+	        throws IOException, SAXException {
 		list = new ArrayList<>();
 		reader.setContentHandler(includeHandler);
 		reader.parse(pathToFXML);
@@ -120,6 +153,8 @@ public class FXMLReader {
 	/**
 	 * Looks for the fx:controller attribute in the FXML file that is being read
 	 * and sets the returning controller name.
+	 * <p>
+	 * After controller is found it will mark it and end parsing.
 	 * 
 	 * @see #parseForController(XMLReader, String)
 	 */
@@ -149,7 +184,7 @@ public class FXMLReader {
 				if (attributes.getValue("source") != null) {
 					FXMLNode node = new FXMLNode();
 					String source = attributes.getValue("source");
-					node.setName(source);
+					node.setPath(source); // sets a relative path
 					list.add(node);
 				}
 		}
