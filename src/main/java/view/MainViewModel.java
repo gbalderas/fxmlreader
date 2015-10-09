@@ -32,7 +32,8 @@ public class MainViewModel implements ViewModel {
 		fileName.set(file.getName());
 
 		// Read FXML file
-		FXMLNode rootNode = FXMLReader.parseFXML(file.getPath());
+		FXMLNode rootNode = FXMLReader.parse(file.getPath());
+		// also works with: ... = FXMLReader.parse(file);
 
 		// add Items to rootNode
 		addTreeItemsFromNode(rootNode, rootItem);
