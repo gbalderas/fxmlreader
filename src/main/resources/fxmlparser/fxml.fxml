@@ -12,6 +12,6 @@
 		<fx:include source="pickers.fxml" />
 		<fx:include source="toolbar.fxml" />
 		<fx:include source="../view/MainView.fxml" />
-		<fx:include source="../../../../../../java/sudoku_mvvm/src/main/resources/view/MainView.fxml" />
+		<!-- <fx:include source="../../../../../../java/sudoku_mvvm/src/main/resources/view/MainView.fxml" /> -->
 	</children>
 </VBox>

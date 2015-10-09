@@ -14,5 +14,6 @@
         </columns>
       </TableView>
       <TreeView prefHeight="200.0" prefWidth="200.0" />
+      <fx:include source="../../view/MainView.fxml" />
    </children>
 </FlowPane>
