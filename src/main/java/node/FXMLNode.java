@@ -99,11 +99,6 @@ public class FXMLNode {
 	 *            The relative path to the FXML file.
 	 */
 	public void setPath(String path) {
-		if (this.parent != null) { // TODO do this in FXMLReader
-			Path paths = Paths.get(parent.getPath().replace(parent.getName(), "") + path).normalize();
-			path = paths.toString();
-			this.name = paths.getFileName().toString();
-		}
 		this.path = path;
 	}
 
