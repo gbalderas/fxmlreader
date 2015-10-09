@@ -22,8 +22,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class FXMLReader {
 
-	private String CONTROLLER;
-	private ArrayList<FXMLNode> list;
+	private static String CONTROLLER;
+	private static ArrayList<FXMLNode> list;
 
 	/**
 	 * Returns an FXMLNode from the given FXML file. This method implements a
@@ -37,7 +37,7 @@ public class FXMLReader {
 	 * @throws IOException
 	 * @see FXMLNode
 	 */
-	public FXMLNode readFXML(File fxml) throws SAXException, IOException { // TODO
+	public static FXMLNode readFXML(File fxml) throws SAXException, IOException { // TODO
 	                                                                       // rename
 		// creates the root FXMLNode and parses through it
 		FXMLNode rootNode = new FXMLNode();
@@ -64,7 +64,7 @@ public class FXMLReader {
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-	private void lookForNodes(FXMLNode node, XMLReader reader) throws IOException, SAXException {
+	private static void lookForNodes(FXMLNode node, XMLReader reader) throws IOException, SAXException {
 
 		for (FXMLNode child : node.getChildren()) {
 			child.setParent(node); // TODO make method for setting path
@@ -91,7 +91,7 @@ public class FXMLReader {
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-	private String parseForController(XMLReader reader, String pathToFXML) throws IOException, SAXException {
+	private static String parseForController(XMLReader reader, String pathToFXML) throws IOException, SAXException {
 		CONTROLLER = null;
 		reader.setContentHandler(controllerHandler);
 		reader.parse(pathToFXML);
@@ -110,7 +110,7 @@ public class FXMLReader {
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-	private ArrayList<FXMLNode> parseForIncludes(XMLReader reader, String pathToFXML) throws IOException, SAXException {
+	private static ArrayList<FXMLNode> parseForIncludes(XMLReader reader, String pathToFXML) throws IOException, SAXException {
 		list = new ArrayList<>();
 		reader.setContentHandler(includeHandler);
 		reader.parse(pathToFXML);
@@ -123,7 +123,7 @@ public class FXMLReader {
 	 * 
 	 * @see #parseForController(XMLReader, String)
 	 */
-	private DefaultHandler controllerHandler = new DefaultHandler() {
+	private static DefaultHandler controllerHandler = new DefaultHandler() {
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) {
 			if (attributes.getValue("fx:controller") != null) {
@@ -142,7 +142,7 @@ public class FXMLReader {
 	 * 
 	 * @see #parseForIncludes(XMLReader, String)
 	 */
-	private DefaultHandler includeHandler = new DefaultHandler() {
+	private static DefaultHandler includeHandler = new DefaultHandler() {
 		@Override
 		public void startElement(String uri, String localName, String qName, Attributes attributes) {
 			if (qName.equalsIgnoreCase("fx:include"))
@@ -163,7 +163,7 @@ public class FXMLReader {
 	 * @author gerardo.balderas
 	 *
 	 */
-	class StopParsingException extends SAXException {
+	private static class StopParsingException extends SAXException {
 		/**
 		 * 
 		 */
