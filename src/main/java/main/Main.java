@@ -1,11 +1,5 @@
 package main;
 
-import java.io.IOException;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
-
 import de.saxsys.mvvmfx.FluentViewLoader;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -16,13 +10,13 @@ public class Main extends Application {
 
 	public static Scene scene;
 
-	public static void main(String[] a) throws ParserConfigurationException, SAXException, IOException {
+	public static void main(String[] a){
 		launch(a);
 
 	}
 
 	@Override
-	public void start(Stage stage) throws Exception {
+	public void start(Stage stage){
 
 		scene = new Scene(FluentViewLoader.fxmlView(MainView.class).load().getView());
 
