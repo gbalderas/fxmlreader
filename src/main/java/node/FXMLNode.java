@@ -1,5 +1,7 @@
 package node;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 /**
@@ -13,6 +15,23 @@ import java.util.ArrayList;
  *
  */
 public class FXMLNode {
+	
+	/**
+	 * Constructor for any FXMLNode.
+	 */
+	public FXMLNode() {
+	}
+
+	/**
+	 * Constructor for RootNodes.
+	 * @param pathToFXML
+	 *            Path to the FXML root.
+	 */
+	public FXMLNode(String pathToFXML) {
+		super();
+		this.path = pathToFXML;
+		this.name = Paths.get(pathToFXML).getFileName().toString();
+	}
 
 	/**
 	 * String with the name of this FXMLNode.
@@ -36,6 +55,25 @@ public class FXMLNode {
 	 * The parent of this FXMLNode.
 	 */
 	private FXMLNode parent;
+
+	/**
+	 * Sets the Core Data of an FXMLNode without the need to Parse the FXML
+	 * file. Requires to know which is the parent of this FXMLNode. Will throw a
+	 * NullPointerException if the parent is itself.
+	 * <p>
+	 * Sets the name, path and its parent. The path is normalized to that of the
+	 * parent's.
+	 * 
+	 * @param parent
+	 *            The parent of this FXMLNode.
+	 */
+	public void setCoreData(FXMLNode parent) {
+		// normalizes path, used to normalize an FXML's relative path.
+		Path path = Paths.get(parent.getPath().replace(parent.getName(), "") + this.getPath()).normalize();
+		this.setParent(parent);
+		this.setName(path.getFileName().toString());
+		this.setPath(path.toString()); // sets new normalized path
+	}
 
 	/**
 	 * Returns the {@link #name} of this FXMLNode, normally the file name of the
@@ -118,6 +156,9 @@ public class FXMLNode {
 	 *            An ArrayList of FXMLNodes.
 	 */
 	public void setChildren(ArrayList<FXMLNode> listOfChildren) {
+		listOfChildren.forEach(n -> {
+			n.setCoreData(this);
+		});
 		this.children = listOfChildren;
 	}
 
