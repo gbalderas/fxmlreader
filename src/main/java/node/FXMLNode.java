@@ -15,7 +15,7 @@ import java.util.ArrayList;
  *
  */
 public class FXMLNode {
-	
+
 	/**
 	 * Constructor for any FXMLNode.
 	 */
@@ -24,6 +24,7 @@ public class FXMLNode {
 
 	/**
 	 * Constructor for RootNodes.
+	 * 
 	 * @param pathToFXML
 	 *            Path to the FXML root.
 	 */
@@ -67,8 +68,9 @@ public class FXMLNode {
 	 * @param parent
 	 *            The parent of this FXMLNode.
 	 */
+	// TODO may remove
 	public void setCoreData(FXMLNode parent) {
-		// normalizes path, used to normalize an FXML's relative path.
+		// normalizes path of FXML, sets name and parent
 		Path path = Paths.get(parent.getPath().replace(parent.getName(), "") + this.getPath()).normalize();
 		this.setParent(parent);
 		this.setName(path.getFileName().toString());
@@ -135,6 +137,9 @@ public class FXMLNode {
 	 *            The relative path to the FXML file.
 	 */
 	public void setPath(String path) {
+		// if (this.parent != null && path.contains("../"))
+		// path = Paths.get(parent.getPath().replace(parent.getName(), "") +
+		// path).normalize().toString();
 		this.path = path;
 	}
 
@@ -155,6 +160,7 @@ public class FXMLNode {
 	 * @param listOfChildren
 	 *            An ArrayList of FXMLNodes.
 	 */
+	//TODO may change
 	public void setChildren(ArrayList<FXMLNode> listOfChildren) {
 		listOfChildren.forEach(n -> {
 			n.setCoreData(this);
