@@ -22,11 +22,7 @@ public class Main extends Application {
 
 		scene = new Scene(FluentViewLoader.fxmlView(MainView.class).load().getView());
 
-		FXMLNode root = new FXMLNode("src/main/resources/fxmlparser/fxml.fxml");
-		root.setChildren(FXMLReader.getChildren(root.getPath()));
-		root.getChildren().forEach(r -> {
-			System.out.println(r.getName() + "; " + r.getPath());
-		});
+		
 
 		stage.setScene(scene);
 		stage.show();
