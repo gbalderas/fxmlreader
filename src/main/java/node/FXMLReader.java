@@ -155,7 +155,7 @@ public class FXMLReader {
 	private static void lookForNodes(FXMLNode node) {
 
 		for (FXMLNode child : node.getChildren()) {
-			
+
 			child.setController(getController(child.getPath()));
 			child.setChildren(getChildren(child.getPath()));
 

@@ -1,6 +1,7 @@
 package node;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
@@ -18,11 +19,9 @@ public class FXMLReaderTest {
 		assertEquals("path should be \"src/main/resources/fxmlparser/fxml.fxml\"", path, root.getPath());
 		assertNull(root.getParent());
 
-		assertEquals("first child name is MainView.fxml","MainView.fxml", root.getChildren().get(0).getName());
-		assertEquals("first child controller is view.MainView", "view.MainView", root.getChildren().get(0).getController());
+		assertEquals("first child name is MainView.fxml", "MainView.fxml", root.getChildren().get(0).getName());
+		assertEquals("first child controller is view.MainView", "view.MainView",
+		        root.getChildren().get(0).getController());
 	}
-	
-	
-	
 
 }

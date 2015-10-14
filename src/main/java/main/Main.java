@@ -4,8 +4,6 @@ import de.saxsys.mvvmfx.FluentViewLoader;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import node.FXMLNode;
-import node.FXMLReader;
 import view.MainView;
 
 public class Main extends Application {
@@ -21,8 +19,6 @@ public class Main extends Application {
 	public void start(Stage stage) {
 
 		scene = new Scene(FluentViewLoader.fxmlView(MainView.class).load().getView());
-
-		
 
 		stage.setScene(scene);
 		stage.show();

@@ -160,7 +160,7 @@ public class FXMLNode {
 	 * @param listOfChildren
 	 *            An ArrayList of FXMLNodes.
 	 */
-	//TODO may change
+	// TODO may change
 	public void setChildren(ArrayList<FXMLNode> listOfChildren) {
 		listOfChildren.forEach(n -> {
 			n.setCoreData(this);
