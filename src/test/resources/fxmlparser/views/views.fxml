@@ -4,16 +4,17 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<FlowPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <ListView prefHeight="200.0" prefWidth="200.0" />
-      <TableView prefHeight="200.0" prefWidth="200.0">
-        <columns>
-          <TableColumn prefWidth="75.0" text="C1" />
-          <TableColumn prefWidth="75.0" text="C2" />
-        </columns>
-      </TableView>
-      <TreeView prefHeight="200.0" prefWidth="200.0" />
-      <fx:include source="../../view/MainView.fxml" />
-   </children>
+<FlowPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+	minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+	 fx:controller="views.Controller">
+	<children>
+		<ListView prefHeight="200.0" prefWidth="200.0" />
+		<TableView prefHeight="200.0" prefWidth="200.0">
+			<columns>
+				<TableColumn prefWidth="75.0" text="C1" />
+				<TableColumn prefWidth="75.0" text="C2" />
+			</columns>
+		</TableView>
+		<TreeView prefHeight="200.0" prefWidth="200.0" />
+	</children>
 </FlowPane>
