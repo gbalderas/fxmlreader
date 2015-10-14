@@ -9,6 +9,7 @@ import de.saxsys.mvvmfx.ViewModel;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.TreeItem;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import main.Main;
 import node.FXMLNode;
 import node.FXMLReader;
@@ -25,10 +26,8 @@ public class MainViewModel implements ViewModel {
 
 	public void readFXML() throws SAXException, IOException {
 		rootItem.getChildren().clear();
-
-		// get fxml file //TODO make sure only .fxml files are acceptable
-		FileChooser filechooser = new FileChooser();
-		File file = filechooser.showOpenDialog(Main.scene.getWindow());
+		
+		File file = getFXML();
 		fileName.set(file.getName());
 
 		// Read FXML file
@@ -37,6 +36,14 @@ public class MainViewModel implements ViewModel {
 
 		// add Items to rootNode
 		addTreeItemsFromNode(rootNode, rootItem);
+	}
+	
+	//FileChooser for FXML files
+	private File getFXML(){
+		FileChooser filechooser = new FileChooser();
+		filechooser.getExtensionFilters().add(new ExtensionFilter("FXML files (*.fxml)", "*.fxml"));
+		File file = filechooser.showOpenDialog(Main.scene.getWindow());
+		return file;
 	}
 
 	// recursive method to get to the leaves -> will create an Item[original
