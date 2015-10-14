@@ -26,7 +26,7 @@ public class MainViewModel implements ViewModel {
 
 	public void readFXML() throws SAXException, IOException {
 		rootItem.getChildren().clear();
-		
+
 		File file = getFXML();
 		fileName.set(file.getName());
 
@@ -37,9 +37,9 @@ public class MainViewModel implements ViewModel {
 		// add Items to rootNode
 		addTreeItemsFromNode(rootNode, rootItem);
 	}
-	
-	//FileChooser for FXML files
-	private File getFXML(){
+
+	// FileChooser for FXML files
+	private File getFXML() {
 		FileChooser filechooser = new FileChooser();
 		filechooser.getExtensionFilters().add(new ExtensionFilter("FXML files (*.fxml)", "*.fxml"));
 		File file = filechooser.showOpenDialog(Main.scene.getWindow());
