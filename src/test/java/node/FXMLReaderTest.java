@@ -17,9 +17,9 @@ public class FXMLReaderTest {
 		path = "src/test/resources/fxmlparser/fxml.fxml";
 		root = FXMLReader.parse(path);
 	}
-	
+
 	@Test
-	public void parsingTest(){
+	public void parsingTest() {
 		FXMLNode views = root.getChildren().get(0).getChildren().get(0).getChildren().get(0);
 		assertEquals("node should be named views.fxml", "views.fxml", views.getName());
 		assertTrue("node should have no children", views.getChildren().isEmpty());
@@ -60,5 +60,5 @@ public class FXMLReaderTest {
 		assertEquals("include file should be toolbar.fxml", "toolbar.fxml", pickers.getChildren().get(0).getName());
 		assertEquals("controller should be null", "not.a.Controller", pickers.getController());
 	}
-	
+
 }
