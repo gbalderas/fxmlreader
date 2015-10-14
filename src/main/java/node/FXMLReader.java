@@ -22,8 +22,28 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class FXMLReader {
 
+	/**
+	 * Custom Exception to stop parsing. Used when Controller is found, since
+	 * there can only be one controller class.
+	 * 
+	 * @author gerardo.balderas
+	 *
+	 */
+	private static class StopParsingException extends SAXException {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 6802692101026207305L;
+
+		// empty StackTrace
+		@Override
+		public synchronized Throwable fillInStackTrace() {
+			return this;
+		}
+
+	}
+
 	private static String CONTROLLER;
-	private static ArrayList<FXMLNode> list;
 
 	/**
 	 * Looks only for the fx:controller attribute in the FXML file that is being
@@ -57,14 +77,56 @@ public class FXMLReader {
 		public void startElement(String uri, String localName, String qName, Attributes attributes) {
 			if (qName.equalsIgnoreCase("fx:include"))
 				if (attributes.getValue("source") != null) {
-					FXMLNode node = new FXMLNode();
+
 					String source = attributes.getValue("source");
-					node.setPath(source); // sets a relative path
+					FXMLNode node = new FXMLNode(source);// sets a relative path
+	                                                     // to the new FXMLNode
 					list.add(node);
 				}
 		}
 
 	};
+
+	private static ArrayList<FXMLNode> list;
+
+	/**
+	 * Returns an ArrayList of FXMLNodes containing only the path to the FXML
+	 * file. This method uses {@link #includeHandler} to find the Elements to
+	 * the ArrayList.
+	 * 
+	 * @param pathToFXML
+	 *            The path to the FXML file.
+	 * @return An ArrayList of FXMLNodes.
+	 */
+	public static ArrayList<FXMLNode> getChildren(String pathToFXML) {
+		XMLReader reader = null;
+		try {
+			reader = XMLReaderFactory.createXMLReader();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		}
+		return parseForIncludes(reader, pathToFXML);
+	}
+
+	/**
+	 * Returns a String with the Controllers package and name from the FXML
+	 * file's path. If No Controller is found it returns null.
+	 * <p>
+	 * Example: package.ControllerClass
+	 * 
+	 * @param pathToFXML
+	 *            The path to the FXML file.
+	 * @return A String of the Controllers package and name.
+	 */
+	public static String getController(String pathToFXML) {
+		XMLReader reader = null;
+		try {
+			reader = XMLReaderFactory.createXMLReader();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		}
+		return parseForController(reader, pathToFXML);
+	}
 
 	/**
 	 * Returns an FXMLNode from the given FXML file. This method implements a
@@ -97,50 +159,10 @@ public class FXMLReader {
 	public static FXMLNode parse(String pathToFXML) {
 		FXMLNode rootNode = new FXMLNode(pathToFXML);
 
-		rootNode.setController(getController(pathToFXML));
-		rootNode.setChildren(getChildren(pathToFXML));
+		rootNode.parseForInformation();
 
 		lookForNodes(rootNode);
 		return rootNode;
-	}
-
-	/**
-	 * Returns a String with the Controllers package and name from the FXML
-	 * file's path. If No Controller is found it returns null.
-	 * <p>
-	 * Example: package.ControllerClass
-	 * 
-	 * @param pathToFXML
-	 *            The path to the FXML file.
-	 * @return A String of the Controllers package and name.
-	 */
-	public static String getController(String pathToFXML) {
-		XMLReader reader = null;
-		try {
-			reader = XMLReaderFactory.createXMLReader();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		}
-		return parseForController(reader, pathToFXML);
-	}
-
-	/**
-	 * Returns an ArrayList of FXMLNodes containing only the path to the FXML
-	 * file. This method uses {@link #includeHandler} to find the Elements to
-	 * the ArrayList.
-	 * 
-	 * @param pathToFXML
-	 *            The path to the FXML file.
-	 * @return An ArrayList of FXMLNodes.
-	 */
-	public static ArrayList<FXMLNode> getChildren(String pathToFXML) {
-		XMLReader reader = null;
-		try {
-			reader = XMLReaderFactory.createXMLReader();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		}
-		return parseForIncludes(reader, pathToFXML);
 	}
 
 	/**
@@ -155,9 +177,7 @@ public class FXMLReader {
 	private static void lookForNodes(FXMLNode node) {
 
 		for (FXMLNode child : node.getChildren()) {
-
-			child.setController(getController(child.getPath()));
-			child.setChildren(getChildren(child.getPath()));
+			child.parseForInformation();
 
 			lookForNodes(child); // loop
 		}
@@ -210,27 +230,6 @@ public class FXMLReader {
 			e.printStackTrace();
 		}
 		return list;
-	}
-
-	/**
-	 * Custom Exception to stop parsing. Used when Controller is found, since
-	 * there can only be one controller class.
-	 * 
-	 * @author gerardo.balderas
-	 *
-	 */
-	private static class StopParsingException extends SAXException {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 6802692101026207305L;
-
-		// empty StackTrace
-		@Override
-		public synchronized Throwable fillInStackTrace() {
-			return this;
-		}
-
 	}
 
 }
