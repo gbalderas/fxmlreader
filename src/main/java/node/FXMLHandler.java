@@ -56,9 +56,9 @@ public class FXMLHandler extends DefaultHandler {
 	}
 
 	/**
-	 * Method that is called when an XML tag is read. This method implements a
+	 * Method that is called when each XML tag is read. This method implements a
 	 * recursive method which follows a Depth-first search to find all included
-	 * FXML files within their FXML files.
+	 * FXML files.
 	 */
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) {
@@ -66,7 +66,7 @@ public class FXMLHandler extends DefaultHandler {
 		                                                  // controllers name
 			controller = attributes.getValue("fx:controller");
 
-		if (qName.equalsIgnoreCase("fx:include"))// gets the included fxmls
+		if (qName.equalsIgnoreCase("fx:include"))// gets the included fxml
 			if (attributes.getValue("source") != null) {
 				String source = attributes.getValue("source");
 				// normalizes the relative path of the include with the
@@ -74,21 +74,25 @@ public class FXMLHandler extends DefaultHandler {
 				String includedPath = Paths.get(pathNoFileName + source).normalize().toString();
 
 				try {
-					// creates a new FXMLHanlder instance for each include
+					// creates a new FXMLHandler instance for each include
+					// each FXMLHandler has an FXMLNode, see: endDocument()
 					FXMLHandler fxmlHandler = new FXMLHandler(includedPath);
 					XMLReader reader = XMLReaderFactory.createXMLReader();
 					reader.setContentHandler(fxmlHandler);
-					reader.parse(includedPath); // loop / looks for innermost
-					                            // include
+					reader.parse(includedPath); // "loop" / looks inside the
+					                            // include until innermost
+					                            // include is found
+					// after parsing the FXML, an FXMLNode will be
+					// created, see: endDocument()
 
-					// adds found include to the include list (will become this'
-					// node children)
-					if (fxmlHandler.getFXMLNode() != null) // no children for
-					                                   // innermost include
+					// adds found include to the include list (will become one
+					// this' node child); no children for innermost include
+					if (fxmlHandler.getFXMLNode() != null)
 						includes.add(fxmlHandler.getFXMLNode());
 
 				} catch (IOException | SAXException e) {
 					System.out.println("No FXML file at " + includedPath);
+					includes.add(null);
 				}
 			}
 	}
