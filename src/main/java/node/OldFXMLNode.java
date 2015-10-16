@@ -14,12 +14,14 @@ import java.util.ArrayList;
  * @author gerardo.balderas
  *
  */
-public class FXMLNode {
-
+@Deprecated
+public class OldFXMLNode {
+	// TODO make class immutable
+	// TODO make variables final, except for children
 	/**
 	 * ArrayList containing the children from this FXMLNode.
 	 */
-	private ArrayList<FXMLNode> children = new ArrayList<>();
+	private ArrayList<OldFXMLNode> children = new ArrayList<>();
 
 	/**
 	 * String with the package and name of this FXMLNode's Controller.
@@ -32,7 +34,8 @@ public class FXMLNode {
 	/**
 	 * The parent of this FXMLNode.
 	 */
-	private FXMLNode parent;
+	// TODO remove parent -> try to find relative path to fxml without parent
+	private OldFXMLNode parent;
 	/**
 	 * String with the path of this FXMLNode's FXML file.
 	 * <p>
@@ -46,9 +49,23 @@ public class FXMLNode {
 	 * @param pathToFXML
 	 *            String with the path to the FXML file.
 	 */
-	public FXMLNode(String pathToFXML) {
+	// TODO add all info on constructor, except for children
+	public OldFXMLNode(String pathToFXML) {
 		this.path = pathToFXML;
 		this.name = Paths.get(pathToFXML).getFileName().toString();
+	}
+
+	public OldFXMLNode(String pathToFXML, String controller) {
+		this.path = pathToFXML;
+		this.name = Paths.get(pathToFXML).getFileName().toString();
+		this.controller = controller;
+	}
+
+	public OldFXMLNode(String pathToFXML, String controller, ArrayList<OldFXMLNode> children) {
+		this.path = pathToFXML;
+		this.name = Paths.get(pathToFXML).getFileName().toString();
+		this.controller = controller;
+		this.children = children;
 	}
 
 	/**
@@ -58,20 +75,9 @@ public class FXMLNode {
 	 * @param child
 	 *            FXMLNode to be added.
 	 */
-	public void addChild(FXMLNode child) {
+	public void addChild(OldFXMLNode child) {
 		this.children.add(child);
 		child.setCoreData(this);
-	}
-
-	/**
-	 * Adds one or more FXMLNodes to this' children.
-	 * 
-	 * @param children
-	 *            FXMLNodes to be added.
-	 */
-	public void addChildren(FXMLNode... children) {
-		for (FXMLNode child : children)
-			addChild(child);
 	}
 
 	/**
@@ -80,7 +86,7 @@ public class FXMLNode {
 	 * 
 	 * @return An ArrayList of FXMLNodes.
 	 */
-	public ArrayList<FXMLNode> getChildren() {
+	public ArrayList<OldFXMLNode> getChildren() {
 		return children;
 	}
 
@@ -111,7 +117,7 @@ public class FXMLNode {
 	 * 
 	 * @return FXMLNode's parent.
 	 */
-	public FXMLNode getParent() {
+	public OldFXMLNode getParent() {
 		return this.parent;
 	}
 
@@ -127,9 +133,10 @@ public class FXMLNode {
 	/**
 	 * Parses this FXMLNode and sets, if found, its Controller and Children.
 	 */
+	// TODO will be removed
 	public void parseForInformation() {
-		this.setController(FXMLReader.getController(this.getPath()));
-		this.setChildren(FXMLReader.getChildren(this.getPath()));
+		this.controller = OldFXMLReader.getController(this.getPath());
+		this.setChildren(OldFXMLReader.getChildren(this.getPath()));
 	}
 
 	/**
@@ -139,24 +146,12 @@ public class FXMLNode {
 	 * @param listOfChildren
 	 *            An ArrayList of FXMLNodes.
 	 */
-	// TODO may change
-	private void setChildren(ArrayList<FXMLNode> listOfChildren) {
+	// TODO to be removed
+	private void setChildren(ArrayList<OldFXMLNode> listOfChildren) {
 		listOfChildren.forEach(n -> {
 			n.setCoreData(this);
 		});
 		this.children = listOfChildren;
-	}
-
-	/**
-	 * Sets the {@link #controller} name to this FXMLNode.
-	 * 
-	 * @param controller
-	 *            Location and name of the controller.
-	 *            <p>
-	 *            Example: package.Controller
-	 */
-	private void setController(String controller) {
-		this.controller = controller;
 	}
 
 	/**
@@ -170,46 +165,13 @@ public class FXMLNode {
 	 * @param parent
 	 *            The parent of this FXMLNode.
 	 */
-	// TODO may remove
-	private void setCoreData(FXMLNode parent) {
+	// TODO to be removed
+	private void setCoreData(OldFXMLNode parent) {
 		// normalizes path of FXML, sets name and parent
 		Path path = Paths.get(parent.getPath().replace(parent.getName(), "") + this.getPath()).normalize();
-		this.setParent(parent);
-		this.setName(path.getFileName().toString());
-		this.setPath(path.toString()); // sets new normalized path
-	}
-
-	/**
-	 * Sets the {@link #name} of this FXMLNode.
-	 * 
-	 * @param name
-	 */
-	private void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * Sets the {@link #parent} of this FXMLNode.
-	 * 
-	 * @param parent
-	 *            The {@link FXMLNode} to be set as {@link #parent}.
-	 */
-	private void setParent(FXMLNode parent) {
 		this.parent = parent;
-	}
-
-	/**
-	 * Sets the {@link #path} of the FXML file to this FXMLNode. If FXML is
-	 * included, the path will be normalized and be relative to its parent's.
-	 * 
-	 * @param path
-	 *            The relative path to the FXML file.
-	 */
-	private void setPath(String path) {
-		// if (this.parent != null && path.contains("../"))
-		// path = Paths.get(parent.getPath().replace(parent.getName(), "") +
-		// path).normalize().toString();
-		this.path = path;
+		this.name = path.getFileName().toString();
+		this.path = path.toString(); // sets new normalized path
 	}
 
 }

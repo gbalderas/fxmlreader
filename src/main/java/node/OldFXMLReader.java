@@ -12,15 +12,18 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * FXMLReader is an Object that can parse an FXML file and retrieve some
- * information from it in the form of an {@link FXMLNode}. Uses the SAX parser
+ * information from it in the form of an {@link OldFXMLNode}. Uses the SAX parser
  * XMLReader.
  * 
  * @author gerardo.balderas
  *
- * @see FXMLNode
+ * @see OldFXMLNode
  * @see XMLReader
  */
-public class FXMLReader {
+@Deprecated
+public class OldFXMLReader {
+	// TODO parse for controllers and includes at the same time
+	// TODO parse the include while fxml is parsing
 
 	/**
 	 * Custom Exception to stop parsing. Used when Controller is found, since
@@ -79,15 +82,21 @@ public class FXMLReader {
 				if (attributes.getValue("source") != null) {
 
 					String source = attributes.getValue("source");
-					FXMLNode node = new FXMLNode(source);// sets a relative path
-	                                                     // to the new FXMLNode
+					OldFXMLNode node = new OldFXMLNode(source);// sets
+	                                                     // a
+	                                                     // relative
+	                                                     // path
+	                                                     // to
+	                                                     // the
+	                                                     // new
+	                                                     // FXMLNode
 					list.add(node);
 				}
 		}
 
 	};
 
-	private static ArrayList<FXMLNode> list;
+	private static ArrayList<OldFXMLNode> list;
 
 	/**
 	 * Returns an ArrayList of FXMLNodes containing only the path to the FXML
@@ -98,7 +107,7 @@ public class FXMLReader {
 	 *            The path to the FXML file.
 	 * @return An ArrayList of FXMLNodes.
 	 */
-	public static ArrayList<FXMLNode> getChildren(String pathToFXML) {
+	public static ArrayList<OldFXMLNode> getChildren(String pathToFXML) {
 		XMLReader reader = null;
 		try {
 			reader = XMLReaderFactory.createXMLReader();
@@ -138,9 +147,9 @@ public class FXMLReader {
 	 * @return The root node of the FXML file as an FXMLNode.
 	 * @throws SAXException
 	 * @throws IOException
-	 * @see FXMLNode
+	 * @see OldFXMLNode
 	 */
-	public static FXMLNode parse(File fxml) throws SAXException, IOException {
+	public static OldFXMLNode parse(File fxml) throws SAXException, IOException {
 		return parse(fxml.getPath());
 	}
 
@@ -154,11 +163,11 @@ public class FXMLReader {
 	 * @return The root node of the FXML String path as an FXMLNode.
 	 * @throws SAXException
 	 * @throws IOException
-	 * @see FXMLNode
+	 * @see OldFXMLNode
 	 */
-	public static FXMLNode parse(String pathToFXML) {
-		FXMLNode rootNode = new FXMLNode(pathToFXML);
-
+	public static OldFXMLNode parse(String pathToFXML) {
+		OldFXMLNode rootNode = new OldFXMLNode(pathToFXML);
+		// change, see: lookForNodes()
 		rootNode.parseForInformation();
 
 		lookForNodes(rootNode);
@@ -174,9 +183,10 @@ public class FXMLReader {
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-	private static void lookForNodes(FXMLNode node) {
+	private static void lookForNodes(OldFXMLNode node) {
 
-		for (FXMLNode child : node.getChildren()) {
+		for (OldFXMLNode child : node.getChildren()) {
+			// TODO change to parse from this class
 			child.parseForInformation();
 
 			lookForNodes(child); // loop
@@ -205,8 +215,9 @@ public class FXMLReader {
 		} catch (IOException | SAXException e) {
 			e.printStackTrace();
 		}
-
-		return CONTROLLER;
+		String returningController = CONTROLLER;
+		CONTROLLER = null;
+		return returningController;
 	}
 
 	/**
@@ -221,7 +232,7 @@ public class FXMLReader {
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-	private static ArrayList<FXMLNode> parseForIncludes(XMLReader reader, String pathToFXML) {
+	private static ArrayList<OldFXMLNode> parseForIncludes(XMLReader reader, String pathToFXML) {
 		list = new ArrayList<>();
 		reader.setContentHandler(includeHandler);
 		try {
