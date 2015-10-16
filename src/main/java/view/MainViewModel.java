@@ -11,8 +11,10 @@ import javafx.scene.control.TreeItem;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import main.Main;
-import node.FXMLNode;
-import node.FXMLReader;
+//import node.FXMLNode;
+//import node.FXMLReader;
+import node.NewFXMLNode;
+import node.NewFXMLReader;
 
 public class MainViewModel implements ViewModel {
 
@@ -31,8 +33,7 @@ public class MainViewModel implements ViewModel {
 		fileName.set(file.getName());
 
 		// Read FXML file
-		FXMLNode rootNode = FXMLReader.parse(file.getPath());
-		// also works with: ... = FXMLReader.parse(file);
+		NewFXMLNode rootNode = NewFXMLReader.parseFXML(file.getPath());
 
 		// add Items to rootNode
 		addTreeItemsFromNode(rootNode, rootItem);
@@ -48,9 +49,9 @@ public class MainViewModel implements ViewModel {
 
 	// recursive method to get to the leaves -> will create an Item[original
 	// fxml] with other Items
-	private void addTreeItemsFromNode(FXMLNode node, TreeItem<String> treeItem) {
+	private void addTreeItemsFromNode(NewFXMLNode node, TreeItem<String> treeItem) {
 		TreeItem<String> item = new TreeItem<String>();
-		for (FXMLNode n : node.getChildren())
+		for (NewFXMLNode n : node.getChildren())
 			addTreeItemsFromNode(n, item);// loop
 
 		System.out.println(node.getName() + " (Children:" + node.getChildren().size() + ") " + " ; "
