@@ -1,4 +1,4 @@
-package node;
+package old;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,8 +12,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * FXMLReader is an Object that can parse an FXML file and retrieve some
- * information from it in the form of an {@link OldFXMLNode}. Uses the SAX parser
- * XMLReader.
+ * information from it in the form of an {@link OldFXMLNode}. Uses the SAX
+ * parser XMLReader.
  * 
  * @author gerardo.balderas
  *
@@ -83,13 +83,13 @@ public class OldFXMLReader {
 
 					String source = attributes.getValue("source");
 					OldFXMLNode node = new OldFXMLNode(source);// sets
-	                                                     // a
-	                                                     // relative
-	                                                     // path
-	                                                     // to
-	                                                     // the
-	                                                     // new
-	                                                     // FXMLNode
+					// a
+	                // relative
+	                // path
+	                // to
+	                // the
+	                // new
+	                // FXMLNode
 					list.add(node);
 				}
 		}

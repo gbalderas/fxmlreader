@@ -1,4 +1,4 @@
-package node;
+package old;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -6,16 +6,22 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import old.OldFXMLNode;
+import old.OldFXMLReader;
+
 @Deprecated
 public class OldFXMLReaderTest {
 
-	OldFXMLNode root;
 	String path;
+	OldFXMLNode root;
 
-	@Before
-	public void setup() {
-		path = "src/test/resources/fxmlparser/fxml.fxml";
-		root = OldFXMLReader.parse(path);
+	@Test // will be changed
+	public void parseForInformationTest() {
+		OldFXMLNode pickers = root.getChildren().get(0);
+		pickers.parseForInformation();
+		assertEquals("should contain one include", 1, pickers.getChildren().size());
+		assertEquals("include file should be toolbar.fxml", "toolbar.fxml", pickers.getChildren().get(0).getName());
+		assertEquals("controller should be null", "not.a.Controller", pickers.getController());
 	}
 
 	@Test
@@ -41,13 +47,10 @@ public class OldFXMLReaderTest {
 		assertEquals("first child controller is null", "not.a.Controller", root.getChildren().get(0).getController());
 	}
 
-	@Test // will be changed
-	public void parseForInformationTest() {
-		OldFXMLNode pickers = root.getChildren().get(0);
-		pickers.parseForInformation();
-		assertEquals("should contain one include", 1, pickers.getChildren().size());
-		assertEquals("include file should be toolbar.fxml", "toolbar.fxml", pickers.getChildren().get(0).getName());
-		assertEquals("controller should be null", "not.a.Controller", pickers.getController());
+	@Before
+	public void setup() {
+		path = "src/test/resources/fxmlparser/fxml.fxml";
+		root = OldFXMLReader.parse(path);
 	}
 
 }
