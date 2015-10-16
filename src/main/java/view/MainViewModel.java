@@ -18,9 +18,9 @@ import node.FXMLReader;
 
 public class MainViewModel implements ViewModel {
 
-	public TreeItem<String> rootItem;
 	public SimpleStringProperty fileName = new SimpleStringProperty();
 	// rootItem is not visible in TreeView in MainView
+	public TreeItem<String> rootItem;
 
 	public MainViewModel() {
 		rootItem = new TreeItem<String>("root");
@@ -39,14 +39,6 @@ public class MainViewModel implements ViewModel {
 		addTreeItemsFromNode(rootNode, rootItem);
 	}
 
-	// FileChooser for FXML files
-	private File getFXML() {
-		FileChooser filechooser = new FileChooser();
-		filechooser.getExtensionFilters().add(new ExtensionFilter("FXML files (*.fxml)", "*.fxml"));
-		File file = filechooser.showOpenDialog(Main.scene.getWindow());
-		return file;
-	}
-
 	// recursive method to get to the leaves -> will create an Item[original
 	// fxml] with other Items
 	private void addTreeItemsFromNode(FXMLNode node, TreeItem<String> treeItem) {
@@ -62,5 +54,13 @@ public class MainViewModel implements ViewModel {
 
 		treeItem.getChildren().add(item);
 		treeItem.setExpanded(true);
+	}
+
+	// FileChooser for FXML files
+	private File getFXML() {
+		FileChooser filechooser = new FileChooser();
+		filechooser.getExtensionFilters().add(new ExtensionFilter("FXML files (*.fxml)", "*.fxml"));
+		File file = filechooser.showOpenDialog(Main.scene.getWindow());
+		return file;
 	}
 }
