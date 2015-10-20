@@ -3,6 +3,8 @@ package node;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.nio.file.Paths;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,7 +15,7 @@ public class FXMLReaderTest {
 
 	@Test
 	public void noIncludesTest() {
-		String pathToViews = "src\\test\\resources\\fxmls\\views\\views.fxml";
+		String pathToViews = Paths.get("src/test/resources/fxmls/views/views.fxml").toString();
 		FXMLNode views = FXMLReader.parseFXML(pathToViews);
 
 		assertEquals("Path should be " + pathToViews, pathToViews, views.getPath());
@@ -32,7 +34,7 @@ public class FXMLReaderTest {
 
 	@Test
 	public void pickersFXMLTest() {
-		String pathToPickersFXML = "src\\test\\resources\\fxmls\\pickers.fxml";
+		String pathToPickersFXML = Paths.get("src/test/resources/fxmls/pickers.fxml").toString();
 		FXMLNode pickers = origin.getChild(0);
 
 		assertEquals("Path should be " + pathToPickersFXML, pathToPickersFXML, pickers.getPath());
@@ -44,13 +46,13 @@ public class FXMLReaderTest {
 
 	@Before
 	public void setup() {
-		pathToOrigin = "src\\test\\resources\\fxmls\\origin.fxml";
+		pathToOrigin = Paths.get("src/test/resources/fxmls/origin.fxml").toString();
 		origin = FXMLReader.parseFXML(pathToOrigin);
 	}
 
 	@Test
 	public void toolbarFXMLTest() {
-		String pathToToolbarFXML = "src\\test\\resources\\fxmls\\toolbar.fxml";
+		String pathToToolbarFXML = Paths.get("src/test/resources/fxmls/toolbar.fxml").toString();
 		FXMLNode toolbar = origin.getChild(0).getChild(0);
 
 		assertEquals("Path should be " + pathToToolbarFXML, pathToToolbarFXML, toolbar.getPath());
@@ -62,7 +64,7 @@ public class FXMLReaderTest {
 
 	@Test
 	public void viewsFXMLTest() {
-		String pathToViewsFXML = "src\\test\\resources\\fxmls\\views\\views.fxml";
+		String pathToViewsFXML = Paths.get("src/test/resources/fxmls/views/views.fxml").toString();
 		FXMLNode views = origin.getChild(1).getChild(0);
 
 		assertEquals("Path should be " + pathToViewsFXML, pathToViewsFXML, views.getPath());
