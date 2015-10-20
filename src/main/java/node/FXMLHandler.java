@@ -74,19 +74,21 @@ public class FXMLHandler extends DefaultHandler {
 				String includedPath = Paths.get(pathNoFileName + source).normalize().toString();
 
 				try {
-					// creates a new FXMLHandler instance for each include
-					// each FXMLHandler has an FXMLNode, see: endDocument()
+					// creates a new FXMLHandler instance for each include.
+					// Each FXMLHandler creates an FXMLNode, see: endDocument()
 					FXMLHandler fxmlHandler = new FXMLHandler(includedPath);
 					XMLReader reader = XMLReaderFactory.createXMLReader();
 					reader.setContentHandler(fxmlHandler);
 					reader.parse(includedPath); // "loop" / looks inside the
 					                            // include until innermost
 					                            // include is found
+
 					// after parsing the FXML, an FXMLNode will be
 					// created, see: endDocument()
 
-					// adds found include to the include list (will become one
-					// this' node child); no children for innermost include
+					// adds found include to the include list (will become a
+					// child of the FXMLNode in the current FXMLHandler
+					// instance); no children for innermost include
 					if (fxmlHandler.getFXMLNode() != null)
 						includes.add(fxmlHandler.getFXMLNode());
 
